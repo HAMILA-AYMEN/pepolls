@@ -5,6 +5,7 @@ import { updateBio,getAllUsers} from "../../redux/userSlice"
 import { dateParser } from "../Utils";
 import UploadImg from "./Uploadimg";
 import FollowHandler from "./FollowHandler";
+import { currentUser } from "../../redux/authSlice";
 
 
 
@@ -25,6 +26,7 @@ const UpdateProfil = () => {
   
     const handleUpdate = () => {
       dispatch(updateBio({userId:authData?._id,bio}));
+      dispatch(currentUser(usersData._id));
       setUpdateForm(false);
     };
     
@@ -33,7 +35,7 @@ const UpdateProfil = () => {
       dispatch(getAllUsers(usersData._id));
      
     
-  }, [ dispatch]);
+  }, [ dispatch,usersData._id]);
    
     return (
       <div className="profil-container">

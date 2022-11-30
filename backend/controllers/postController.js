@@ -5,12 +5,11 @@ const Post=require("../models/Post")
 
 module.exports.readPost = async(req, res) => {
     try {
-        const docs=await Post.find().populate("posterId").sort({ createdAt: -1 })
+        const docs=await Post.find().populate("posterId").populate("comments.commenterId").sort({ createdAt: -1 })
         res.send(docs)
     } catch (err) {
         console.log("Error to get data : " + err);
     }
-
 };
 
 module.exports.createPost = async (req, res) => {
@@ -20,12 +19,13 @@ module.exports.createPost = async (req, res) => {
         posterId: req.body.posterId,
         message: req.body.message,
         
-
+        picture:req.file?.filename,
         video: req.body.video,
-        picture:req.file.filename,
         likers: [],
         comments: [],
-    });
+    }
+    );
+    
 
     try {
         const post = await newPost.save();
@@ -73,14 +73,14 @@ module.exports.likePost = async (req, res) => {
         await Post.findByIdAndUpdate(
             req.params.id,
             {
-                $push: { likers: req.body.id },
+                $addToSet: { likers: req.body.posterId },
             },
             { new: true }
         );
         await User.findByIdAndUpdate(
             req.body.id,
             {
-                $push: { likes: req.params.id },
+                $addToSet: { likes: req.params.postId },
             },
             { new: true }
         );
@@ -128,6 +128,7 @@ module.exports.commentPost = (req, res) => {
                     comments: {
                         commenterId: req.body.commenterId,
                         commenterPseudo: req.body.commenterPseudo,
+                        
                         text: req.body.text,
                         timestamp: new Date().getTime(),
                     },
@@ -145,27 +146,21 @@ module.exports.commentPost = (req, res) => {
 };
 
 
-module.exports.editCommentPost = (req, res) => {
+module.exports.editCommentPost = async(req, res) => {
     if (!ObjectID.isValid(req.params.id))
         return res.status(400).send("ID unknown : " + req.params.id);
-
-    try {
-        return Post.findById(req.params.id, (err, docs) => {
-            const theComment = docs.comments.find((comment) =>
-                comment._id.equals(req.body.commentId)
-            );
-
-            if (!theComment) return res.status(404).send("Comment not found");
-            theComment.text = req.body.text;
-
-            return docs.save((err) => {
-                if (!err) return res.status(200).send(docs);
-                return res.status(500).send(err);
+        try {
+            const result = await Post.findOneAndUpdate({
+              _id: req.params.id
+            }, {
+              $set: {
+                text: req.body.text
+              }
             });
-        });
-    } catch (err) {
-        return res.status(400).send(err);
-    }
+            return res.send(result);
+          } catch (err) {
+            return res.status(500).json({ message: err });
+          }
 };
 
 module.exports.deleteCommentPost = (req, res) => {
@@ -178,7 +173,7 @@ module.exports.deleteCommentPost = (req, res) => {
             {
                 $pull: {
                     comments: {
-                        _id: req.body.commentId,
+                        commmenterId: req.body.commenterId,
                     },
                 },
             },

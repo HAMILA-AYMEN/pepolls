@@ -12,9 +12,10 @@ router.delete('/:id',requireAuth, deletePost);
 router.patch('/like-post/:id',requireAuth, likePost);
 router.patch('/unlike-post/:id',requireAuth, unlikePost);
 
+
 router.patch('/comment-post/:id',requireAuth, commentPost);
 router.patch('/edit-comment-post/:id',requireAuth, editCommentPost);
-router.patch('/delete-comment-post/:id',requireAuth, deleteCommentPost);
+router.delete('/delete-comment-post/:id',requireAuth, deleteCommentPost);
 
 
 

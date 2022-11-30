@@ -14,7 +14,8 @@ const Card = ({ post }) => {
   const [textUpdate, setTextUpdate] = useState(null);
   const [showComments, setShowComments] = useState(false);
   const usersData = useSelector((state) => state.user.users);
-  const authData = useSelector((state) => state.auth.user);
+  const userData = useSelector((state) => state.auth.user);
+ 
   const dispatch = useDispatch();
 
   const updateItem = () => {
@@ -27,8 +28,9 @@ const Card = ({ post }) => {
 
   useEffect(() => {
     dispatch(getAllUsers)
-    setIsLoading(false)
-  }, [usersData]);
+    !isEmpty(usersData[0]) && setIsLoading(false);
+  }, [usersData,dispatch]);
+
 
   return (
     <li className="card-container" key={post._id}>
@@ -45,18 +47,15 @@ const Card = ({ post }) => {
           <div className="card-right">
             <div className="card-header">
               <div className="pseudo">
-                <h3>
-                  {
-                    usersData
-                      .map((user) => {
-                        if (user._id === post.posterId) return user.pseudo;
-                        else return null;
-                      })
-                      .join("")}
+            
+              <h3>
+                  {post.posterId.pseudo}
                 </h3>
-                {post.posterId !== authData._id && (
+              {post.posterId._id !== userData._id && (
+            
                   <FollowHandler idToFollow={post.posterId} type={"card"} />
                 )}
+                
               </div>
               <span>{dateParser(post.createdAt)}</span>
             </div>
@@ -89,12 +88,14 @@ const Card = ({ post }) => {
               ></iframe>
             )}
             
+            {userData._id === post.posterId._id && (
               <div className="button-container">
                 <div onClick={() => setIsUpdated(!isUpdated)}>
                   <img src="./images/icons/edit.svg" alt="edit" />
                 </div>
                 <DeleteCard id={post._id} />
               </div>
+            )}
             
             <div className="card-footer">
               <div className="comment-icon">

@@ -15,7 +15,7 @@ const DeleteCard = (props) => {
         }
       }}
     >
-      <img src="./images/icons/trash.svg" alt="trash" />
+      <img src="./images/icons/trash.svg" alt="delete" />
     </div>
   );
 };

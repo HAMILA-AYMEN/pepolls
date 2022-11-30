@@ -6,6 +6,13 @@ module.exports.getAllUsers = async (req, res) => {
   res.status(200).json(users);
 };
 
+module.exports.getUsersToFollow = async (req, res) => {
+  const currentUser = await User.findById(req.user?.id).select("-password");
+  const toExclude = [currentUser._id, ...currentUser.following]
+  const users = await User.find({_id: {"$nin": toExclude}}).select("-password");
+  res.status(200).json(users);
+};
+
 module.exports.userInfo = (req, res) => {
 
   if (!ObjectID.isValid(req.params.id))
@@ -18,7 +25,7 @@ module.exports.userInfo = (req, res) => {
 };
 
 module.exports.updateUser = async (req, res) => {
-  console.log('update bio ',req.params.id)
+  
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("ID unknown : " + req.params.id);
 

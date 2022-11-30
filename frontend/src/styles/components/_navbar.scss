@@ -84,13 +84,10 @@ nav {
     }
   }
    .popup-profil-container {
-    z-index: 100;
-    width: 100%;
-    top: 0;
-    left: 0;
-    height: 100%;
-    position: fixed;
-    animation: popup 1s forwards;
+    margin: auto;
+  background: rgb(255, 255, 255);
+  width: 50%;
+  padding: 5px;
 
     @keyframes popup {
       to {
@@ -100,8 +97,7 @@ nav {
 
     .modal {
       position: absolute;
-      top: 10%;
-      left: 50%;
+    
       transform: translate(-100%);
       background: $color-1;
       padding: 25px;

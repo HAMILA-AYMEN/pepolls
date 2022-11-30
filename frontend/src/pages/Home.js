@@ -5,7 +5,7 @@ import {  useSelector } from "react-redux";
 
 
 import NewPostForm from "../components/Post/NewPostForm ";
-import Thread from '../components/Thread';
+import News from '../components/News';
 import FriendsHint from '../components/Profil/FriendsHint';
 
 const Home = () => {
@@ -18,9 +18,16 @@ const Home = () => {
         <div className="home-header">
         {auth ? <NewPostForm /> : <Log signin={true} signup={false} />}
         </div>
-        {auth ?<Thread />: <span></span>}
+        {auth ?<News />: <span></span>}
       </div>
-      
+      <div className="right-side">
+        <div className="right-side-container">
+          <div className="wrapper">
+            
+            {auth && <FriendsHint />}
+          </div>
+        </div>
+      </div>
       </div>
   )
 }

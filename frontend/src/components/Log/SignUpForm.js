@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 
 
 
+
 const SignUpForm = () => {
 
     const [data, setData] = useState({ pseudo: "", email: "", password: "", controllPassword: "" })

@@ -1,7 +1,6 @@
 import React, {  useEffect, useState } from "react";
 
-import Popup from "reactjs-popup";
-import "reactjs-popup/dist/index.css";
+
 import { useDispatch,useSelector } from "react-redux";
 import { likePost, unlikePost } from "../../redux/postSlice";
 
@@ -11,7 +10,7 @@ const LikeButton = ({ post }) => {
   const dispatch = useDispatch();
 
   const like = () => {
-    dispatch(likePost({posterId:post._id,auth}))
+    dispatch(likePost({postId:post._id}))
     setLiked(true);
   };
 
@@ -27,15 +26,12 @@ const LikeButton = ({ post }) => {
 
   return (
     <div className="like-container">
-      {auth === null && (
-        <Popup
-          trigger={<img src="./images/icons/heart.svg" alt="like" />}
-          position={["bottom center", "bottom right", "bottom left"]}
-          closeOnDocumentClick
-        >
-          <div>Connectez-vous pour aimer un post !</div>
-        </Popup>
-      )}
+    
+        
+       
+         
+       
+      
       {auth && liked === false && (
         <img src="./images/icons/heart.svg" onClick={like} alt="like" />
       )}

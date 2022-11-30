@@ -3,9 +3,13 @@ import axios from 'axios'
 
 const initialState = {
   posts: [],
+  
+  
   auth: false,
   errors: [],
-  loading: false
+  loading: false,
+ 
+  
 }
 export const addPost = createAsyncThunk('post/addPost', async (data, { rejectWithValue }) => {
   try {
@@ -31,8 +35,8 @@ export const likePost = createAsyncThunk('post/likePost', async (data, { rejectW
   try {
     const res = await axios({
       method: "patch",
-      url: `api/post/like-post/${data.posterId}`,
-      data: { userId: data.userId },
+      url: `api/post/like-post/${data.postId}`,
+      data: { posterId: data.posterId },
     })
     return res.data
 
@@ -40,12 +44,12 @@ export const likePost = createAsyncThunk('post/likePost', async (data, { rejectW
     return rejectWithValue(error.response.data.errors)
   }
 })
-export const unlikePost = createAsyncThunk('post/unlikePost', async (posterId, userId, { rejectWithValue }) => {
+export const unlikePost = createAsyncThunk('post/unlikePost', async (data, { rejectWithValue }) => {
   try {
     const res = await axios({
       method: "patch",
-      url: `api/post/unlike-post/${posterId}`,
-      data: { id: userId },
+      url: `api/post/unlike-post/${data.posterId}`,
+      data: { id: data.userId },
     })
 
     return res.data
@@ -86,6 +90,54 @@ export const deletePost = createAsyncThunk('post/deletePost', async (postId, { r
   }
 })
 
+export const addComment = createAsyncThunk('post/addComment', async (data, { rejectWithValue }) => {
+  try {
+    const res = await axios({
+      method: "patch",
+      url: `api/post/comment-post/${data.commentId}`,
+      data:  {commenterId:data.commenterId,text:data.text,commenterPseudo:data.commenterPseudo,picture:data.picture} ,
+
+    })
+
+    return res.data
+
+  } catch (error) {
+    return rejectWithValue(error.response.data.errors)
+  }
+})
+
+export const editComment  = createAsyncThunk('post/editComment', async (data, { rejectWithValue }) => {
+  try {
+    const res = await axios({
+      method: "patch",
+      url: `api/post/edit-comment-post/${data.commentId}`,
+      data: { text:data.text },
+
+    })
+
+    return res.data
+
+  } catch (error) {
+    return rejectWithValue(error.response.data.errors)
+  }
+})
+
+export const deleteComment  = createAsyncThunk('post/deleteComment', async (commentId, { rejectWithValue }) => {
+  try {
+    const res = await axios({
+      method: "delete",
+      url: `api/post/delete-comment-post/${commentId}`,
+      
+    })
+
+    return res.data
+
+  } catch (error) {
+    return rejectWithValue(error.response.data.errors)
+  }
+})
+
+
 
 const postSlice = createSlice({
   name: "post",
@@ -121,8 +173,7 @@ const postSlice = createSlice({
 
         state.auth = true
         state.loading = false
-        const index = state.posts.find(post => post._id === payload._id)
-        state.posts.splice(index, 1)
+        state.comments=state.comments.filter(comment =>comment._id !== payload._id)
 
       })
       .addCase(deletePost.rejected, (state, { payload }) => {
@@ -173,9 +224,12 @@ const postSlice = createSlice({
       .addCase(likePost.fulfilled, (state, { payload }) => {
         state.auth = true
         state.loading = false
+        state.posts.map(post => post._id === payload._id)
+        state.likers=payload.posterId
+       
 
-        state.posterId=payload.posterId
-        state.likes=payload.likes
+      
+       
 
 
       })
@@ -191,16 +245,9 @@ const postSlice = createSlice({
       .addCase(unlikePost.fulfilled, (state, { payload }) => {
         state.auth = true
         state.loading = false
-
-        return state.map((post) => {
-          if (post._id === payload.posterId) {
-            return {
-              ...post,
-              likers: post.likers.filter((id) => id !== payload.userId),
-            };
-          }
-          return post;
-        });
+        const index = state.posts.posterId.find(post => post._id === payload._id)
+        state.posts.splice(index, 1)
+        
 
 
       })
@@ -210,7 +257,58 @@ const postSlice = createSlice({
 
       })
 
+      .addCase(addComment.pending, (state, { payload }) => {
+        state.loading = true;
+      })
+      .addCase(addComment.fulfilled, (state, { payload }) => {
+        state.auth = true
+        state.loading = false
 
+        state.comments=payload.comments
+        
+
+
+      })
+      .addCase(addComment.rejected, (state, { payload }) => {
+        state.errors = payload
+        state.loading = false
+
+      })
+
+      .addCase(editComment.pending, (state, { payload }) => {
+        state.loading = true;
+      })
+      .addCase(editComment.fulfilled, (state, { payload }) => {
+        state.auth = true
+        state.loading = false
+
+        state.comments.find(comment => comment._id === payload._id)
+        state.text = payload.text
+
+
+      })
+      .addCase(editComment.rejected, (state, { payload }) => {
+        state.errors = payload
+        state.loading = false
+
+      })
+
+      .addCase(deleteComment.pending, (state, { payload }) => {
+        state.loading = true;
+      })
+      .addCase(deleteComment.fulfilled, (state, { payload }) => {
+        state.auth = true
+        state.loading = false
+
+        state.comments=state.comments.filter(comment =>comment._id !== payload._id)
+
+
+      })
+      .addCase(deleteComment.rejected, (state, { payload }) => {
+        state.errors = payload
+        state.loading = false
+
+      })
 
 
 

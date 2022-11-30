@@ -5,21 +5,22 @@ import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 
 import Logout from "../Log/Logout";
-import { followUser, getAllUsers } from "../../redux/userSlice";
+import {  getAllUsers } from "../../redux/userSlice";
 
 const Navbar = () => {
   const auth = useSelector((state) => state.auth.auth)
   const userData = useSelector((state) => state.auth.user);
   const [Popup, setPopup] = useState(false);
+  const usersData = useSelector((state) => state.user.users);
   const dispatch = useDispatch();
   useEffect(() => {
     
     dispatch(getAllUsers(usersData._id));
    
   
-}, [ dispatch]);
+}, [ dispatch,usersData._id]);
  
-  const usersData = useSelector((state) => state.user.users);
+  
     
   
 
@@ -48,7 +49,8 @@ const Navbar = () => {
   
             <NavLink>
              
-            <Badge color="primary" badgeContent={userData.followers.length} onClick={() => setPopup(true)}>
+            <Badge color="primary" badgeContent={userData.followers.length} onClick={() => setPopup(true)
+            }>
            
         <MailIcon />
       </Badge>
@@ -60,10 +62,10 @@ const Navbar = () => {
              <span className="cross" onClick={() => setPopup(false)}>
         &#10005;
       </span>
-      <ul>
+     
               {usersData.map((user) => {
-                for (let i = 0; i < userData.following.length; i++) {
-                  if (user._id === userData.following[i]) {
+                for (let i = 0; i < userData.followers.length; i++) {
+                  if (user._id === userData.followers[i]) {
                     return (
                       <li key={user._id}>
                         <img src={`uploads/profil/${user.picture}`} alt="user-pic" />
@@ -74,7 +76,7 @@ const Navbar = () => {
                   }
                 }
               })}
-              </ul>
+              
               </div>
   </div> 
   ) }

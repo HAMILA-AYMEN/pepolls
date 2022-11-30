@@ -18,7 +18,7 @@ const NewPostForm  = () => {
       const data = new FormData();
       data.append('posterId', authData._id);
       data.append('message', message);
-      if (file) data.append("file", file);
+      data.append("file", file);
       data.append('video', video);
 
        dispatch(addPost(data));

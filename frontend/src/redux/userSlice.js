@@ -7,18 +7,23 @@ const initialState = {
     auth: true,
     errors: [],
     loading: false,
-    picture: "",
-    bio: "",
-    pseudo: "",
-    followers: [],
-    following: []
+   
 }
-
-
 export const getAllUsers=createAsyncThunk('user/getAllUsers',async(data,{rejectWithValue})=>{
 
     try {
         const res=await axios.get("api/user",data)
+        return res.data
+      
+    } catch (error) {
+        return rejectWithValue(error.response.data.errors)
+    }
+})
+
+export const getUsersToFollow=createAsyncThunk('user/getUsersToFollow',async(data,{rejectWithValue})=>{
+
+    try {
+        const res=await axios.get("api/user/users-to-follow",data)
         return res.data
       
     } catch (error) {
@@ -118,6 +123,22 @@ const userSlice = createSlice({
             state.loading = false
 
         })
+        .addCase(getUsersToFollow.pending, (state, { payload }) => {
+            state.loading = true;
+        })
+        .addCase(getUsersToFollow.fulfilled, (state, { payload }) => {
+            state.users = payload
+            
+            state.auth = true
+            state.loading = false
+           
+
+        })
+        .addCase(getUsersToFollow.rejected, (state, { payload }) => {
+            state.errors = payload
+            state.loading = false
+
+        })
 
             .addCase(getUser.pending, (state, { payload }) => {
                 state.loading = true;
@@ -128,7 +149,7 @@ const userSlice = createSlice({
                 state.picture = payload.picture
                 state.auth = true
                 state.loading = false
-                localStorage.setItem('token', payload.token)
+                
 
             })
             .addCase(getUser.rejected, (state, { payload }) => {
@@ -200,7 +221,7 @@ const userSlice = createSlice({
                 
                 state.auth = true
                 state.loading = false
-                localStorage.setItem('token', payload.token)
+                
 
 
             })

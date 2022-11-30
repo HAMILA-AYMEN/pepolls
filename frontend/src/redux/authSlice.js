@@ -31,13 +31,9 @@ export const loginUser=createAsyncThunk('auth/loginUser',async(data,{rejectWithV
 })
 
 export const currentUser=createAsyncThunk('auth/currentUser',async(arg,{rejectWithValue})=>{
-  const config={
-      headers:{
-          authorization:localStorage.getItem('token')
-      }
-  }
+  
   try {
-      const res=await axios.get('api/auth/current',config)
+      const res=await axios.get('api/auth/current',)
       return res.data
   } catch (error) {
       return rejectWithValue(error.response.data.errors)

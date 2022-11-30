@@ -1,11 +1,27 @@
 const mongoose = require('mongoose');
 
+const CommentSchema = new mongoose.Schema(
+  {
+    commenterId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref:'User'
+    },
+   
+    commenterPseudo: String,
+   
+    text: String,
+    timestamp: Number,
+  }
+
+)
 const PostSchema = new mongoose.Schema(
   {
     posterId: {
       type: mongoose.Schema.Types.ObjectId,
       ref:'User'
     },
+   
+    
     message: {
       type: String,
       trim: true,
@@ -21,17 +37,7 @@ const PostSchema = new mongoose.Schema(
       type: [String]
       
     },
-    comments: {
-      type: [
-        {
-          commenterId:String,
-          commenterPseudo: String,
-          text: String,
-          timestamp: Number,
-        }
-      ],
-      required: true,
-    },
+    comments: [CommentSchema]
   },
   {
     timestamps: true,

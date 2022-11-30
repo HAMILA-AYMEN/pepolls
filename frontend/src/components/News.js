@@ -2,7 +2,7 @@ import React, { useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPosts } from "../redux/postSlice";
 import Card from "./Post/Card";
-import { isEmpty } from "./Utils";
+
 
 const Thread = () => {
  
