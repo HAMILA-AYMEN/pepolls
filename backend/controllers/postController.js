@@ -68,23 +68,25 @@ module.exports.deletePost = (req, res) => {
 module.exports.likePost = async (req, res) => {
     if (!ObjectID.isValid(req.params.id))
         return res.status(400).send("ID unknown : " + req.params.id);
-
+       
     try {
         await Post.findByIdAndUpdate(
             req.params.id,
+            
             {
-                $addToSet: { likers: req.body.posterId },
+                $addToSet: { likers: req.body.posterId},
             },
             { new: true }
         );
         await User.findByIdAndUpdate(
-            req.body.id,
+            req.params.id,
             {
-                $addToSet: { likes: req.params.postId },
+                $addToSet: { likes:req.params.id},
             },
             { new: true }
         );
-        res.send('user update with success')
+       return res.send('user updated')
+       
     } catch (err) {
         return res.status(400).send(err);
     }
@@ -98,19 +100,20 @@ module.exports.unlikePost = async (req, res) => {
         await Post.findByIdAndUpdate(
             req.params.id,
             {
-                $pull: { likers: req.body.id },
+                $pull: { likers: req.body.posterId },
             },
             { new: true },
-            
+           
         );
         await User.findByIdAndUpdate(
-            req.body.id,
+            req.params.id,
             {
                 $pull: { likes: req.params.id },
             },
             { new: true },
-            res.send('user update with success')
-        );
+            
+        ); 
+        return res.send('user update with success')
     } catch (err) {
         return res.status(400).send(err);
     }
@@ -174,7 +177,7 @@ module.exports.editCommentPost = (req, res) => {
       return res.status(400).send("ID unknown : " + req.params.id);
   
     try {
-      return Post.findByIdAndRemove(
+      return Post.findByIdAndUpdate(
         req.params.id,
         {
           $pull: {
@@ -182,7 +185,10 @@ module.exports.editCommentPost = (req, res) => {
               _id: req.body.commentId,
             },
           },
-        })
+        },
+        { new: true })
+              .then((data) => res.send(data))
+              .catch((err) => res.status(500).send({ message: err }));
       } catch (err) {
           return res.status(400).send(err);
       }

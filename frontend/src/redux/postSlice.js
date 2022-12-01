@@ -50,8 +50,8 @@ export const unlikePost = createAsyncThunk('post/unlikePost', async (data, { rej
   try {
     const res = await axios({
       method: "patch",
-      url: `api/post/unlike-post/${data.posterId}`,
-      data: { id: data.userId },
+      url: `api/post/unlike-post/${data.postId}`,
+      data: { posterId: data.posterId},
     })
 
     return res.data
@@ -250,8 +250,8 @@ const postSlice = createSlice({
       .addCase(unlikePost.fulfilled, (state, { payload }) => {
         state.auth = true
         state.loading = false
-        const index = state.posts.posterId.find(post => post._id === payload._id)
-        state.posts.splice(index, 1)
+        state.posts.posterId.filter(post => post._id !== payload._id)
+       
         
 
 

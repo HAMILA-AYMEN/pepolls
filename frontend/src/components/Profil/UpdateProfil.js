@@ -79,6 +79,7 @@ const UpdateProfil = () => {
             <h4>Membre depuis le : {dateParser(authData.createdAt)}</h4>
             <h5 onClick={() => setFollowingPopup(true)}>
               Abonnements : {authData.following ? authData.following.length : ""}
+            
             </h5>
             <h5 onClick={() => setFollowersPopup(true)}>
               Abonnés : {authData.followers ? authData.followers.length : ""}
