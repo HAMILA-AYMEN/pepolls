@@ -25,7 +25,7 @@ _________________________
    - REACT_APP_API_URL=http://localhost:5000/=http://localhost:5000/ `l'url de votre serveur`
 _____________________________
 
-![Texte alternatif](./client/public/images/sc1.png "Capture d'écran")
+![Texte alternatif](./frontend/public/images/sc1.png "Capture d'écran")
 
   
 💻 Réalisé par Mohamed Aymen Hmila, novembre 2022. Libre d'utilisation
