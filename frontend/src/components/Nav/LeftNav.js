@@ -17,11 +17,7 @@ const LeftNav = () => {
             <img src="./images/icons/home.png" alt="home"/>
           </NavLink>
           <br/>
-          <br/>
-          <NavLink to='/trending' className="active-left-nav">
-            <img src="./images/icons/rocket.png" alt="home"/>
-          </NavLink>
-          <br/>
+         
           <br/>
           {auth ? (
           <NavLink to='/profil'  className="active-left-nav">

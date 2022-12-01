@@ -1,21 +1,24 @@
 import React, {  useEffect, useState } from "react";
 import { useDispatch ,useSelector} from "react-redux";
-import {  editComment } from "../../redux/postSlice";
+import {  editComment, getPosts } from "../../redux/postSlice";
 
 
-const Edit = ({ comment,commenterId, postId }) => {
+const Edit = ({ comment,commenterId ,postId}) => {
   const [isAuthor, setIsAuthor] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [text, setText] = useState("");
+  const [textUpdate, setTextUpdate] = useState("");
   const auth = useSelector((state) => state.auth.auth)
   const dispatch = useDispatch();
 
   const handleEdit = (e) => {
     e.preventDefault();
+    console.log(textUpdate)
 
-    if (text) {
-      dispatch(editComment(postId, commenterId, text));
-      setText("");
+    if (textUpdate) {
+      console.log(postId)
+      dispatch(editComment({postId, commentId:comment._id, text:textUpdate}));
+      dispatch(getPosts());
+      setTextUpdate("");
       setEdit(false);
     }
   };
@@ -49,7 +52,7 @@ const Edit = ({ comment,commenterId, postId }) => {
           <input
             type="text"
             name="text"
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => setTextUpdate(e.target.value)}
             defaultValue={comment.text}
           />
           

@@ -5,10 +5,9 @@ import { isEmpty } from "../Utils";
 import FollowHandler from "./FollowHandler";
 
 const FriendsHint = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [playOnce, setPlayOnce] = useState(true);
+  
  
-  const userData = useSelector((state) => state.auth.user);
+ 
   const usersData = useSelector((state) => state.user.users);
   const dispatch = useDispatch();
 
@@ -16,7 +15,7 @@ const FriendsHint = () => {
     
     dispatch(getUsersToFollow(usersData._id));
    
-}, [ dispatch]);
+}, [ dispatch,usersData._id]);
 
   return (
     <div className="get-friends-container">

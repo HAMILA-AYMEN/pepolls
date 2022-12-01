@@ -3,7 +3,8 @@ import axios from 'axios'
 
 const initialState = {
   posts: [],
-  
+ 
+ 
   
   auth: false,
   errors: [],
@@ -11,6 +12,7 @@ const initialState = {
  
   
 }
+
 export const addPost = createAsyncThunk('post/addPost', async (data, { rejectWithValue }) => {
   try {
     const res = await axios.post("api/post", data)
@@ -110,8 +112,8 @@ export const editComment  = createAsyncThunk('post/editComment', async (data, { 
   try {
     const res = await axios({
       method: "patch",
-      url: `api/post/edit-comment-post/${data.commentId}`,
-      data: { text:data.text },
+      url: `api/post/edit-comment-post/${data.postId}`,
+      data: { text:data.text ,commentId:data.commentId},
 
     })
 
@@ -122,11 +124,12 @@ export const editComment  = createAsyncThunk('post/editComment', async (data, { 
   }
 })
 
-export const deleteComment  = createAsyncThunk('post/deleteComment', async (commentId, { rejectWithValue }) => {
+export const deleteComment  = createAsyncThunk('post/deleteComment', async (data, { rejectWithValue }) => {
   try {
     const res = await axios({
-      method: "delete",
-      url: `api/post/delete-comment-post/${commentId}`,
+      method: "patch",
+      url: `api/post/delete-comment-post/${data.postId}`,
+      data: { commentId:data.commentId}
       
     })
 
@@ -151,6 +154,8 @@ const postSlice = createSlice({
 
   extraReducers(builder) {
     builder
+
+    
       .addCase(addPost.pending, (state, { payload }) => {
         state.loading = true;
       })
@@ -173,7 +178,7 @@ const postSlice = createSlice({
 
         state.auth = true
         state.loading = false
-        state.comments=state.comments.filter(comment =>comment._id !== payload._id)
+        state.posts=state.posts.filter(post =>post._id !== payload._id)
 
       })
       .addCase(deletePost.rejected, (state, { payload }) => {
@@ -281,9 +286,10 @@ const postSlice = createSlice({
       .addCase(editComment.fulfilled, (state, { payload }) => {
         state.auth = true
         state.loading = false
-
         state.comments.find(comment => comment._id === payload._id)
-        state.text = payload.text
+        state.message = payload.message
+
+        
 
 
       })

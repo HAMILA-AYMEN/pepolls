@@ -15,7 +15,7 @@ router.patch('/unlike-post/:id',requireAuth, unlikePost);
 
 router.patch('/comment-post/:id',requireAuth, commentPost);
 router.patch('/edit-comment-post/:id',requireAuth, editCommentPost);
-router.delete('/delete-comment-post/:id',requireAuth, deleteCommentPost);
+router.patch('/delete-comment-post/:id',requireAuth, deleteCommentPost);
 
 
 

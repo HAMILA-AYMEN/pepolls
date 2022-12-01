@@ -61,8 +61,8 @@ const CardComments = ({ post }) => {
               
               {comment.commenterId._id === authData._id && (
                 <>
-                  <Edit  comment={comment} commentId={post._id} />
-                  <DeleteComment id={comment._id} />
+                  <Edit  postId={post._id} comment={comment}/>
+                  <DeleteComment comment={comment} postId={post._id} />
                   </>
                 )}
             </div>

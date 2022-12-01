@@ -12,6 +12,7 @@ const Card = ({ post }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdated, setIsUpdated] = useState(false);
   const [textUpdate, setTextUpdate] = useState(null);
+  const [isFollowed, setIsFollowed] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const usersData = useSelector((state) => state.user.users);
   const userData = useSelector((state) => state.auth.user);
@@ -31,6 +32,7 @@ const Card = ({ post }) => {
     !isEmpty(usersData[0]) && setIsLoading(false);
   }, [usersData,dispatch]);
 
+ 
 
   return (
     <li className="card-container" key={post._id}>
@@ -53,7 +55,7 @@ const Card = ({ post }) => {
                 </h3>
               {post.posterId._id !== userData._id && (
             
-                  <FollowHandler idToFollow={post.posterId} type={"card"} />
+                  <FollowHandler idToFollow={post.posterId._id} type={"card"} />
                 )}
                 
               </div>

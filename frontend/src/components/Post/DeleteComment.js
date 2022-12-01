@@ -2,10 +2,12 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { deleteComment } from "../../redux/postSlice";
 
-const DeleteCard = (props) => {
+const DeleteCard = ({postId,comment}) => {
   const dispatch = useDispatch();
 
-  const deleteQuote = () => dispatch(deleteComment(props.id));
+
+  const deleteQuote = () => dispatch(deleteComment({postId,commentId:comment._id}));
+  
 
   return (
     <div className="edit-comment"

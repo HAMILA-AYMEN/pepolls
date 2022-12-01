@@ -146,44 +146,44 @@ module.exports.commentPost = (req, res) => {
 };
 
 
-module.exports.editCommentPost = async(req, res) => {
+module.exports.editCommentPost = (req, res) => {
     if (!ObjectID.isValid(req.params.id))
-        return res.status(400).send("ID unknown : " + req.params.id);
-        try {
-            const result = await Post.findOneAndUpdate({
-              _id: req.params.id
-            }, {
-              $set: {
-                text: req.body.text
-              }
-            });
-            return res.send(result);
-          } catch (err) {
-            return res.status(500).json({ message: err });
-          }
-};
-
-module.exports.deleteCommentPost = (req, res) => {
-    if (!ObjectID.isValid(req.params.id))
-        return res.status(400).send("ID unknown : " + req.params.id);
-
+      return res.status(400).send("ID unknown : " + req.params.id);
+  
     try {
-        return Post.findByIdAndUpdate(
-            req.params.id,
-            {
-                $pull: {
-                    comments: {
-                        commmenterId: req.body.commenterId,
-                    },
-                },
-            },
-            { new: true },
-            (err, docs) => {
-                if (!err) return res.send(docs);
-                else return res.status(400).send(err);
-            }
+      return Post.findById(req.params.id, (err, docs) => {
+        const theComment = docs.comments.find((comment) =>
+          comment._id.equals(req.body.commentId)
         );
+  
+        if (!theComment) return res.status(404).send("Comment not found");
+        theComment.text = req.body.text;
+  
+        return docs.save((err) => {
+          if (!err) return res.status(200).send(docs);
+          return res.status(500).send(err);
+        });
+      });
     } catch (err) {
-        return res.status(400).send(err);
+      return res.status(400).send(err);
     }
-};
+  };
+
+  module.exports.deleteCommentPost = (req, res) => {
+    if (!ObjectID.isValid(req.params.id))
+      return res.status(400).send("ID unknown : " + req.params.id);
+  
+    try {
+      return Post.findByIdAndRemove(
+        req.params.id,
+        {
+          $pull: {
+            comments: {
+              _id: req.body.commentId,
+            },
+          },
+        })
+      } catch (err) {
+          return res.status(400).send(err);
+      }
+  };

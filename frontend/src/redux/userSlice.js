@@ -214,10 +214,10 @@ const userSlice = createSlice({
                 state.loading = true;
             })
             .addCase(unfollowUser.fulfilled, (state, { payload }) => {
-                const index=  state.following.filter(follow => follow.idToUnfollow === payload.idToUnfollow)
+                 state.users.filter(follow => follow.idToUnfollow !==  payload.idToUnfollow)
                     
                 
-                state.following.splice(index, 1)
+                
                 
                 state.auth = true
                 state.loading = false
